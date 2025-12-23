@@ -10,13 +10,14 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>spring-cloud-msa</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
         <module>service-discovery</module>
         <module>user-service</module>
         <module>first-service</module>
         <module>second-service</module>
+        <module>apigateway-service</module>
     </modules>
     <name>spring-cloud-msa</name>
     <description>spring-cloud-msa</description>
