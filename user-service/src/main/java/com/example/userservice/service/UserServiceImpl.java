@@ -3,18 +3,17 @@ package com.example.userservice.service;
 import com.example.userservice.dto.UserDto;
 import com.example.userservice.jpa.UserEntity;
 import com.example.userservice.jpa.UserRepository;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
 
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
     Environment env;
-
     UserRepository userRepository;
 
     public UserServiceImpl(Environment env, UserRepository userRepository) {
