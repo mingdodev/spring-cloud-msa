@@ -55,7 +55,6 @@ public class WebSecurity {
                 )
                 .authenticationManager(authenticationManager)
                 .addFilter(getAuthenticationFilter(authenticationManager))
-                .httpBasic(Customizer.withDefaults())
                 .headers((headers) -> headers
                         .frameOptions(FrameOptionsConfig::sameOrigin));
 
