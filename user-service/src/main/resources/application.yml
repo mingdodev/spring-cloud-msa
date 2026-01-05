@@ -19,6 +19,10 @@ spring:
     hibernate:
       ddl-auto: update
 
+token:
+  expiration-time: 864000000 # 10 days
+  secret: my-very-long-secret-key-1234567890123456
+
 logging:
   level:
     org.springframework.security: DEBUG
