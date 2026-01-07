@@ -43,8 +43,9 @@ public class WebSecurity {
         http.csrf( (csrf) -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/**/welcome").permitAll()
-                        .requestMatchers("/**/health-check").permitAll()
+                        .requestMatchers("/welcome").permitAll()
+                        .requestMatchers("/health-check/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/**").access(
                                 new WebExpressionAuthorizationManager(
                                         "hasIpAddress('127.0.0.1') or hasIpAddress('::1') or " +
