@@ -4,7 +4,9 @@ server:
 spring:
   application:
     name: user-service
-#  config:
+  profiles:
+    active: dev
+  #  config:
 #    import: "optional:configserver:http://localhost:8888"
   h2:
     console:
@@ -39,7 +41,7 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 greeting:
-  message: Welcome to the Simple E-commerce.
+  message: Welcome to the Simple E-commerce. (Spring Boot)
 
 management:
   endpoints:
