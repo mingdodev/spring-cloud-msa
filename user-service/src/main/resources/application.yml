@@ -4,8 +4,8 @@ server:
 spring:
   application:
     name: user-service
-  profiles:
-    active: dev
+#  profiles:
+#    active: dev
   config:
     import: "optional:configserver:http://localhost:8888"
   rabbitmq:
@@ -27,6 +27,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  cloud:
+    config:
+      name: config-server # Configuration Server에서 가져오는 설정 파일이 application.yml이 되도록
 
 #token:
 #  expiration-time: 864000000 # 10 days
