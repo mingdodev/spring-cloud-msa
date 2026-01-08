@@ -6,8 +6,13 @@ spring:
     name: user-service
   profiles:
     active: dev
-  #  config:
-#    import: "optional:configserver:http://localhost:8888"
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   h2:
     console:
       enabled: true
@@ -52,3 +57,4 @@ management:
           - health
           - beans
           - info
+          - busrefresh
