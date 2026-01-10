@@ -19,17 +19,17 @@ spring:
       settings:
         web-allow-others: true
       path: /h2-console
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;
-    username: sa
-    password:
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;
+#    username: sa
+#    password: sa
   jpa:
     hibernate:
       ddl-auto: update
   cloud:
     config:
-      name: config-server # Configuration Server에서 가져오는 설정 파일이 application.yml이 되도록
+      name: user-service
 
 #token:
 #  expiration-time: 864000000 # 10 days

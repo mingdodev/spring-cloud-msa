@@ -10,7 +10,7 @@ spring:
     username: guest
     password: guest
   profiles:
-    active: native
+    active: git
   cloud:
     config:
       server:
@@ -27,3 +27,6 @@ management:
         include:
           - health
           - busrefresh
+
+encrypt:
+  key: abcdefghijklmnopqrstuvwxyz1234567890
