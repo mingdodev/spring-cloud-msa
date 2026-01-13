@@ -5,16 +5,14 @@ import com.example.userservice.dto.UserDto;
 import com.example.userservice.jpa.UserEntity;
 import com.example.userservice.jpa.UserRepository;
 import com.example.userservice.vo.ResponseOrder;
+import feign.FeignException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -74,7 +72,12 @@ public class UserServiceImpl implements UserService {
 //        // 타입 소거 우회: 익명 클래스를 만들고 그 클래스의 부모 타입의 제네릭 정보를 리플렉션으로 읽는다.
 //        List<ResponseOrder> orderList = orderListResponse.getBody();
 
-        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+        List<ResponseOrder> orderList = null;
+        try {
+            orderServiceClient.getOrders(userId);
+        } catch (FeignException ex) {
+            log.error(ex.getMessage());
+        }
         userDto.setOrders(orderList);
 
         return userDto;
