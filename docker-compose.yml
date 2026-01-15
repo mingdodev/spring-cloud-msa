@@ -1,4 +1,16 @@
 services:
+
+  mariadb:
+    image: mariadb:12
+    container_name: mariadb
+    ports:
+      - "13306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: test1357
+      MARIADB_DATABASE: test
+    volumes:
+      - ./init/order-service.sql:/docker-entrypoint-initdb.d/init.sql
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
     container_name: zookeeper
