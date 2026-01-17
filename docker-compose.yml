@@ -64,6 +64,7 @@ services:
       CONNECT_PLUGIN_PATH: /usr/share/java,/plugins
     volumes:
       - ./connect/plugins:/plugins
+    # kafka connect jdbc 10.8.5, mariadb java client 3.5.7
 
   rabbitmq:
     image: rabbitmq:4-management
