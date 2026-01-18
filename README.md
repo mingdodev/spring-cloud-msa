@@ -29,7 +29,7 @@
 docker compose up -d
 ```
 
-### Kafka 테스트
+### Kafka Command
 
 Kafka CLI는 Kafka 컨테이너 내부에 포함된 커맨드를 사용합니다.
 
@@ -57,4 +57,48 @@ kafka-console-producer --bootstrap-server localhost:9092 --topic quickstart-even
 
 # 메시지 소비
 kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-events --from-beginning
+```
+
+<br>
+
+Kafka Connect를 활용해, 코드 변경 없이 설정만으로 외부 시스템과 카프카 간 데이터 이동(ETL)을 자동화할 수 있습니다.
+
+- **Source Connect 생성**: `POST localhost:8083/connectors`
+```json
+{
+	"name" : "my-source-connect",
+	"config" : {
+        "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
+        "connection.url":"jdbc:mariadb://mariadb:3306/test",
+        "connection.user":"root",
+        "connection.password":"test1357",
+        "mode": "incrementing",
+        "incrementing.column.name" : "id",
+        "table.whitelist":"test.users",
+        "topic.prefix" : "my_topic_",
+        "tasks.max" : "1"
+	}
+}
+```
+> table.whitelist 설정 시 테이블명만 지정할 경우, 동일한 이름의 테이블이 다른 스키마에 존재하면 JDBC Source Connector의 메타데이터 조회 과정에서 대상 테이블을 식별하지 못해 오류가 발생할 수 있다.
+> 이를 방지하기 위해 스키마를 포함한 형태(test.users)로 명시하였다.
+
+<br>
+
+- **Sink Connect 생성**: `POST localhost:8083/connectors`
+```json
+{
+    "name":"my-sink-connect",
+    "config":{
+        "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
+        "connection.url":"jdbc:mariadb://mariadb:3306/mydb",
+        "connection.user":"root",
+        "connection.password":"test1357",
+        "auto.create":"true",
+        "auto.evolve":"true",
+        "delete.enabled":"false",
+        "tasks.max":"1",
+        "topics":"my_topic_users"
+        }
+}
 ```
