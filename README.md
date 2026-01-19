@@ -1,16 +1,17 @@
 # Spring Cloud MSA
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.9-6DB33F)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.1-6DB33F)](https://spring.io/projects/spring-cloud)
-[![Java](https://img.shields.io/badge/Java-21-007396)](https://adoptium.net/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.9-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.0.1-6DB33F?logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
+[![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
+[![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-3.9-231F20?logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-4.0-FF6600?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+[![MariaDB](https://img.shields.io/badge/MariaDB-12.0-003545?logo=mariadb&logoColor=white)](https://mariadb.org/)
 
 인프런 Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)
 
 <br>
 
 > 강의에서는 `spring-cloud-starter-bootstrap`을 사용하지만, 본 프로젝트는 Spring Boot 3 최신 버전과의 호환성을 고려하여 `spring.config.import` 기반 설정 로딩을 사용합니다.
-
-<br>
 
 ---
 
@@ -29,7 +30,9 @@
 docker compose up -d
 ```
 
-### Kafka Command
+<br>
+
+### Kafka
 
 Kafka CLI는 Kafka 컨테이너 내부에 포함된 커맨드를 사용합니다.
 
@@ -61,7 +64,17 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-even
 
 <br>
 
-Kafka Connect를 활용해, 코드 변경 없이 설정만으로 외부 시스템과 카프카 간 데이터 이동(ETL)을 자동화할 수 있습니다.
+**Kafka Connect**를 활용해, 코드 변경 없이 설정만으로 외부 시스템과 카프카 간 데이터 이동(ETL)을 자동화할 수 있습니다.
+
+- **Apache Kafka**: 3.9.x
+- **Confluent Platform (Kafka Connect)**: 7.9.x
+- **kafka-connect-jdbc**: 10.8.5
+- **mariadb-java-client**: 3.5.7
+
+본 구성은 `confluentinc/cp-kafka-connect:7.9` 이미지를 기준으로 하며,
+위와 같은 버전 조합을 사용합니다.
+
+<br>
 
 - **Source Connect 생성**: `POST localhost:8083/connectors`
 ```json
