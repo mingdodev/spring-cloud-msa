@@ -62,6 +62,8 @@ kafka-console-producer --bootstrap-server localhost:9092 --topic quickstart-even
 kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-events --from-beginning
 ```
 
+#### Order–Catalog 서비스 간 이벤트 기반 통신
+
 `example-catalog-topic`을 통해 Order 서비스가 이벤트를 발행하고, Catalog 서비스가 이를 소비하여 주문 시 상품 재고를 동기화합니다.
 
 - **spring-kafka**: 3.3.11
@@ -110,7 +112,7 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-even
     "name":"my-sink-connect",
     "config":{
         "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
-        "connection.url":"jdbc:mariadb://mariadb:3306/mydb",
+        "connection.url":"jdbc:mariadb://mariadb:3306/test",
         "connection.user":"root",
         "connection.password":"test1357",
         "auto.create":"true",
@@ -118,6 +120,30 @@ kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-even
         "delete.enabled":"false",
         "tasks.max":"1",
         "topics":"my_topic_users"
+        }
+}
+```
+
+<br>
+
+#### Order Service 데이터 정합성 유지
+
+`orders` 토픽을 소비해 MariaDB에 **orders** 레코드를 적재하는 JDBC Sink Connector(`my-order-sink-connect`)를 생성합니다.
+이를 통해 Order Service 인스턴스가 여러 개로 확장되더라도, 토픽에 기록된 주문 데이터를 단일 데이터베이스에 일관되게 반영할 수 있습니다.
+
+```json
+{
+    "name":"my-order-sink-connect",
+    "config":{
+        "connector.class":"io.confluent.connect.jdbc.JdbcSinkConnector",
+        "connection.url":"jdbc:mariadb://mariadb:3306/test",
+        "connection.user":"root",
+        "connection.password":"test1357",
+        "auto.create":"true",
+        "auto.evolve":"true",
+        "delete.enabled":"false",
+        "tasks.max":"1",
+        "topics":"orders"
         }
 }
 ```
