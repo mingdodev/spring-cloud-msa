@@ -2,10 +2,12 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
-import com.example.orderservice.mq.KafakaProducer;
+import com.example.orderservice.mq.OrderEventProducer;
+import com.example.orderservice.mq.OrderRecordProducer;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOrder;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -24,13 +26,16 @@ import java.util.List;
 public class OrderController {
     Environment env;
     OrderService orderService;
-    KafakaProducer kafakaProducer;
+    OrderEventProducer orderEventProducer;
+    OrderRecordProducer orderRecordProducer;
 
     @Autowired
-    public OrderController(Environment env, OrderService orderService, KafakaProducer kafkaProducer) {
+    public OrderController(Environment env, OrderService orderService,
+                           OrderEventProducer orderEventProducer, OrderRecordProducer orderRecordProducer) {
         this.env = env;
         this.orderService = orderService;
-        this.kafakaProducer = kafkaProducer;
+        this.orderEventProducer = orderEventProducer;
+        this.orderRecordProducer = orderRecordProducer;
     }
 
     @GetMapping("/health-check")
@@ -50,11 +55,13 @@ public class OrderController {
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
 
-        OrderDto createdOrder = orderService.createOrder(orderDto);
-        ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice());
+        ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
 
         log.info("After added orders data");
-        kafakaProducer.send("example-catalog-topic", createdOrder);
+        orderEventProducer.send("example-catalog-topic", orderDto);
+        orderRecordProducer.send("orders", orderDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
