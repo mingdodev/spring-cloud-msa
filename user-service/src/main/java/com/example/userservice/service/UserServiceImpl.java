@@ -12,6 +12,8 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,15 +30,17 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder passwordEncoder;
     RestTemplate restTemplate;
     OrderServiceClient orderServiceClient;
+    CircuitBreakerFactory circuitBreakerFactory;
 
     public UserServiceImpl(Environment env, UserRepository userRepository,
                            BCryptPasswordEncoder passwordEncoder, RestTemplate restTemplate,
-                           OrderServiceClient orderServiceClient) {
+                           OrderServiceClient orderServiceClient, CircuitBreakerFactory circuitBreakerFactory) {
         this.env = env;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.restTemplate = restTemplate;
         this.orderServiceClient = orderServiceClient;
+        this.circuitBreakerFactory = circuitBreakerFactory;
     }
 
     @Override
@@ -72,12 +76,17 @@ public class UserServiceImpl implements UserService {
 //        // 타입 소거 우회: 익명 클래스를 만들고 그 클래스의 부모 타입의 제네릭 정보를 리플렉션으로 읽는다.
 //        List<ResponseOrder> orderList = orderListResponse.getBody();
 
-        List<ResponseOrder> orderList = null;
-        try {
-            orderList = orderServiceClient.getOrders(userId);
-        } catch (FeignException ex) {
-            log.error(ex.getMessage());
-        }
+//        List<ResponseOrder> orderList = null;
+//        try {
+//            orderList = orderServiceClient.getOrders(userId);
+//        } catch (FeignException ex) {
+//            log.error(ex.getMessage());
+//        }
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+        List<ResponseOrder> orderList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId),
+                throwable -> new ArrayList<>());
+
         userDto.setOrders(orderList);
 
         return userDto;
