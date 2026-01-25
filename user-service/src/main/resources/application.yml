@@ -39,6 +39,8 @@ logging:
   level:
     org.springframework.security: DEBUG
     com.example.userservice.client: DEBUG
+  pattern:
+    correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
 eureka:
   instance:
@@ -63,11 +65,11 @@ management:
           - info
           - busrefresh
   tracing:
-    enabled: true
     sampling:
       probability: 1.0
     propagation:
-      type: b3
+      consume: B3
+      produce: B3
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans

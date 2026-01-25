@@ -30,6 +30,8 @@ eureka:
 logging:
   level:
     org.springframework.security: DEBUG
+  pattern:
+    correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
 management:
   tracing:
@@ -37,7 +39,7 @@ management:
     sampling:
       probability: 1.0
     propagation:
-      type: b3
+      type: w3c
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
