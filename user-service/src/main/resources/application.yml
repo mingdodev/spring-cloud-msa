@@ -30,6 +30,9 @@ spring:
   cloud:
     config:
       name: user-service
+    openfeign:
+      micrometer:
+        enabled: true
 
 #token:
 #  expiration-time: 864000000 # 10 days

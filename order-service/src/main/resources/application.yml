@@ -39,7 +39,8 @@ management:
     sampling:
       probability: 1.0
     propagation:
-      type: w3c
+      consume: B3
+      produce: B3
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
