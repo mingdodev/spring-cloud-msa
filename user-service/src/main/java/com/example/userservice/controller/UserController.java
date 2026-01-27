@@ -6,6 +6,7 @@ import com.example.userservice.service.UserService;
 import com.example.userservice.vo.Greeting;
 import com.example.userservice.vo.RequestUser;
 import com.example.userservice.vo.ResponseUser;
+import io.micrometer.core.annotation.Timed;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/health-check")
+    @Timed(value = "users.status", longTask = true)
+    // longTask는 현재 작업이 얼마나 오래 돌고 있는지? 진행 중인 작업도 추적한다. 일반 타이머는 끝나야 기록됨. 느린 게 문제가 아니라 안 끝나는 게 문제인 작업을 추적할 때 사용.
     public String status() {
         return String.format("It's Working in User Service"
                 + ", port(local.server.port)=" + env.getProperty("local.server.port")
@@ -51,6 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/welcome")
+    @Timed(value = "users.welcome", longTask = true)
     public String welcome(HttpServletRequest request) {
         log.info("users.welcome ip: {}, {}, {}, {}", request.getRemoteAddr()
                 , request.getRemoteHost(), request.getRequestURI(), request.getRequestURL());
