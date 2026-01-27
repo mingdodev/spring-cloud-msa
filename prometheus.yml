@@ -1,0 +1,22 @@
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:9090']
+
+  - job_name: 'user-service'
+    scrape_interval: 15s
+    metrics_path: '/user-service/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
+
+  - job_name: 'order-service'
+    scrape_interval: 15s
+    metrics_path: '/order-service/actuator/prometheus'
+    static_configs:
+      - targets: [ 'host.docker.internal:8000' ]
+
+  - job_name: 'apigateway-service'
+    scrape_interval: 15s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8000']
