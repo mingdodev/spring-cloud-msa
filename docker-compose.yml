@@ -35,6 +35,19 @@ services:
     networks:
       my-network:
 
+  user-service:
+    image: mingdodev/user-service:1.0.0
+    container_name: user-service
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_RABBITMQ_HOST: rabbitmq
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      LOGGING_FILE_NAME: /api-logs/users-ws.log
+
+    networks:
+      my-network:
+
   mariadb:
     image: mariadb:12
     container_name: mariadb
