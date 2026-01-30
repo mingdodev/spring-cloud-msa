@@ -1,5 +1,18 @@
 services:
 
+  config-service:
+    image: mingdodev/config-service:1.0.0
+    ports:
+      - "8888:8888"
+    environment:
+      ENCRYPT_KEY_STORE_LOCATION: file:///apiEncryptionKey.jks # application.yml의 로딩 시점 느림 이슈
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+    depends_on:
+      - rabbitmq
+    networks:
+      my-network:
+
   mariadb:
     image: mariadb:12
     container_name: mariadb
@@ -10,6 +23,8 @@ services:
       MARIADB_DATABASE: test
     volumes:
       - ./init/order-service.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      my-network:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.9.0
@@ -19,6 +34,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    networks:
+      my-network:
 
   kafka:
     image: confluentinc/cp-kafka:7.9.0
@@ -38,33 +55,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-
-  kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.9.0
-    container_name: kafka-connect
-    depends_on:
-      - kafka
-    ports:
-      - "8083:8083"
-    environment:
-      CONNECT_BOOTSTRAP_SERVERS: kafka:29092
-      CONNECT_REST_PORT: 8083
-      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
-      CONNECT_GROUP_ID: connect-cluster
-      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_PLUGIN_PATH: /usr/share/java,/plugins
-    volumes:
-      - ./connect/plugins:/plugins
-    # kafka connect jdbc 10.8.5, mariadb java client 3.5.7
+    networks:
+      my-network:
 
   rabbitmq:
     image: rabbitmq:4-management
@@ -72,12 +64,19 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      my-network:
 
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
     ports:
       - "9411:9411"
+    networks:
+      my-network:
 
   prometheus:
     image: prom/prometheus
@@ -86,9 +85,18 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      my-network:
 
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
+    networks:
+      my-network:
+
+networks:
+  my-network:
+    external: true
+    name: ecommerce-network

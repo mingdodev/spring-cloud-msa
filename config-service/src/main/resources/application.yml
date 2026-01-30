@@ -29,8 +29,7 @@ management:
           - busrefresh
 
 encrypt:
-#  key: abcdefghijklmnopqrstuvwxyz1234567890
   key-store:
-    location: file://${user.home}/Desktop/project/keystore/apiEncryptionKey.jks
+    location: file:///apiEncryptionKey.jks
     password: 1234qwer
     alias: apiEncryptionkey
