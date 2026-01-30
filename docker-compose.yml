@@ -19,7 +19,7 @@ services:
     ports:
       - "8761:8761"
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
     networks:
       my-network:
 
@@ -29,7 +29,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:8888 # Api gateway service는 Config Server 필수
       SPRING_RABBITMQ_HOST: rabbitmq
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
     networks:
@@ -39,8 +39,8 @@ services:
     image: mingdodev/user-service:1.0.0
     container_name: user-service
     environment:
-      GATEWAY_IP: 172.24.0.5/32
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      GATEWAY_IP: 172.24.0.0/16 # GATEWAY IP가 매번 변경되므로, 같은 도커 네트워크 대역이면 OK
+      SPRING_CONFIG_IMPORT: configserver:http://config-service:8888 # User service는 Config Server 필수
       SPRING_RABBITMQ_HOST: rabbitmq
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
@@ -52,7 +52,7 @@ services:
     image: mingdodev/order-service:1.0.0
     container_name: order-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/test
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
@@ -66,7 +66,7 @@ services:
     image: mingdodev/catalog-service:1.0.0
     container_name: catalog-service
     environment:
-      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
