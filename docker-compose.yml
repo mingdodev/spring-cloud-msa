@@ -55,6 +55,7 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/test
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
       LOGGING_FILE_NAME: /api-logs/orders-ws.log
@@ -67,6 +68,7 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
       LOGGING_FILE_NAME: /api-logs/catalogs-ws.log
     networks:
@@ -98,8 +100,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.9.0
-    container_name: broker
-    hostname: kafka
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
