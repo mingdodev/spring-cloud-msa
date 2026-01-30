@@ -22,6 +22,8 @@ spring:
     generate-ddl: true
     database: h2
     defer-datasource-initialization: true
+  kafka:
+    bootstrap-servers: localhost:9092
 
 eureka:
   instance:
