@@ -2,14 +2,24 @@ services:
 
   config-service:
     image: mingdodev/config-service:1.0.0
+    container_name: config-service
     ports:
       - "8888:8888"
     environment:
       ENCRYPT_KEY_STORE_LOCATION: file:///apiEncryptionKey.jks # application.yml의 로딩 시점 느림 이슈
       SPRING_RABBITMQ_HOST: rabbitmq
-
     depends_on:
       - rabbitmq
+    networks:
+      my-network:
+
+  service-discovery:
+    image: mingdodev/service-discovery:1.0.0
+    container_name: service-discovery
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
     networks:
       my-network:
 
