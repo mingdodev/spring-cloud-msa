@@ -55,13 +55,16 @@ public class OrderController {
         OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
         orderDto.setUserId(userId);
 
-        orderDto.setOrderId(UUID.randomUUID().toString());
-        orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice());
+//        Order Service 하나만 띄울 것임
+//        orderDto.setOrderId(UUID.randomUUID().toString());
+//        orderDto.setTotalPrice(orderDto.getQty() * orderDto.getUnitPrice());
+
+        orderService.createOrder(orderDto);
         ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
 
         log.info("After added orders data");
         orderEventProducer.send("example-catalog-topic", orderDto);
-        orderRecordProducer.send("orders", orderDto);
+//        orderRecordProducer.send("orders", orderDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
