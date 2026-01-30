@@ -13,6 +13,14 @@
 
 <br>
 
+#### ✏️ TO DO
+
+- [ ] Swagger API 실습
+- [ ] Microservice Architecture 패턴 학습
+- [ ] Kubernetes 환경 구성
+
+<br>
+
 ---
 
 ## Containerization
@@ -44,6 +52,8 @@ docker compose up -d
 
 강의 예제에서는 `spring-cloud-starter-bootstrap`과 `bootstrap.yml`을 사용하여 Config Server 및 암호화 관련 설정을 부트스트랩 단계에서 로딩합니다. 그러나 본 프로젝트는 Spring Boot 3 최신 버전과의 호환성을 고려하여 `bootstrap.yml` 대신 `spring.config.import` 기반 설정 로딩 방식을 사용합니다.
 
+<br>
+
 ### bootstrap.yml 미사용으로 인한 이슈
 
 `bootstrap.yml`을 사용하지 않고 `application.yml` 기반으로 설정을 구성하면서,
@@ -60,6 +70,8 @@ IllegalStateException: Invalid keystore location
 environment:
   ENCRYPT_KEY_STORE_LOCATION: file:///apiEncryptionKey.jks
 ```
+
+<br>
 
 ---
 
@@ -92,8 +104,9 @@ kafka-console-producer --bootstrap-server localhost:9092 --topic quickstart-even
 # 메시지 소비
 kafka-console-consumer --bootstrap-server localhost:9092 --topic quickstart-events --from-beginning
 ```
+<br>
 
-#### Order–Catalog 서비스 간 이벤트 기반 통신
+### Order–Catalog 서비스 간 이벤트 기반 통신
 
 `example-catalog-topic`을 통해 Order 서비스가 이벤트를 발행하고, Catalog 서비스가 이를 소비하여 주문 시 상품 재고를 동기화합니다.
 
