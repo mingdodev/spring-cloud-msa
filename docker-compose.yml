@@ -60,6 +60,17 @@ services:
     networks:
       my-network:
 
+  catalog-service:
+    image: mingdodev/catalog-service:1.0.0
+    container_name: catalog-service
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_RABBITMQ_HOST: rabbitmq
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+      LOGGING_FILE_NAME: /api-logs/catalogs-ws.log
+    networks:
+      my-network:
+
   mariadb:
     image: mariadb:12
     container_name: mariadb
