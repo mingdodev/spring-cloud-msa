@@ -39,6 +39,7 @@ services:
     image: mingdodev/user-service:1.0.0
     container_name: user-service
     environment:
+      GATEWAY_IP: 172.24.0.5/32
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_RABBITMQ_HOST: rabbitmq
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
