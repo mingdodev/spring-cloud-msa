@@ -8,6 +8,11 @@ services:
     environment:
       ENCRYPT_KEY_STORE_LOCATION: file:///apiEncryptionKey.jks # application.yml의 로딩 시점 느림 이슈
       SPRING_RABBITMQ_HOST: rabbitmq
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8888/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     depends_on:
       - rabbitmq
     networks:
@@ -32,6 +37,9 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://config-service:8888 # Api gateway service는 Config Server 필수
       SPRING_RABBITMQ_HOST: rabbitmq
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+    depends_on:
+      config-service:
+        condition: service_healthy
     networks:
       my-network:
 
@@ -45,6 +53,9 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
       LOGGING_FILE_NAME: /api-logs/users-ws.log
+    depends_on:
+      config-service:
+        condition: service_healthy
     networks:
       my-network:
 
