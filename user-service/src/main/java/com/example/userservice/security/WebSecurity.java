@@ -1,6 +1,7 @@
 package com.example.userservice.security;
 
 import com.example.userservice.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -9,6 +10,7 @@ import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,6 +18,7 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class WebSecurity {
     private UserService userService;
     private Environment env;
@@ -23,7 +26,6 @@ public class WebSecurity {
 
     public static final String ALLOWED_IP_ADDRESS = "127.0.0.1";
     public static final String SUBNET = "/32";
-    public static final IpAddressMatcher ALLOWED_IP_ADDRESS_MATCHER = new IpAddressMatcher(ALLOWED_IP_ADDRESS + SUBNET);
 
     public WebSecurity(Environment env, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.env = env;
@@ -41,11 +43,15 @@ public class WebSecurity {
 
         String gatewayIp = env.getProperty("gateway.ip");
         if (gatewayIp == null || gatewayIp.isBlank()) {
-            throw new IllegalStateException("Missing required property: gateway.ip");
+            gatewayIp = ALLOWED_IP_ADDRESS + SUBNET;
+            log.warn(
+                    "gateway.ip is not configured. Falling back to default IP restriction: {}",
+                    gatewayIp
+            );
         }
         IpAddressMatcher matcher = new IpAddressMatcher(gatewayIp);
 
-        http.csrf( (csrf) -> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**", "/actuator/**", "/health-check/**").permitAll()
 
