@@ -53,7 +53,8 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/actuator/**", "/health-check/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/actuator/**", "/health-check/**",
+                                "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
 
                         .requestMatchers("/login", "/users").access((authentication, context) ->
                                 new AuthorizationDecision(matcher.matches(context.getRequest()))

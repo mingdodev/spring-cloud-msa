@@ -9,13 +9,14 @@
 
 > 인프런 Spring Cloud로 개발하는 마이크로서비스 애플리케이션(MSA)
 
+<br>
+
 본 프로젝트는 Spring Cloud 기반 MSA 환경을 구성하고, Config Server, API Gateway, 메시지 브로커(RabbitMQ, Kafka)를 중심으로 서비스 간 설정 관리 및 이벤트 기반 통신을 실습합니다.
 
 <br>
 
 #### ✏️ TO DO
 
-- [ ] Swagger API 실습
 - [ ] Microservice Architecture 패턴 학습
 - [ ] Kubernetes 환경 구성
 
