@@ -45,12 +45,20 @@ spring:
               filters:
                 - RemoveRequestHeader=Cookie
                 - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-            - id: user-service
+            - id: user-service-actuator
               uri: lb://USER-SERVICE
               predicates:
                 - Path=/user-service/actuator/**
                 - Method=GET,POST
               filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - id: user-service-public-docs
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/user-service/swagger-ui/**, /user-service/v3/api-docs/**
+              filters:
+                - AddRequestHeader=X-Forwarded-Prefix, /user-service
                 - RemoveRequestHeader=Cookie
                 - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - id: user-service
@@ -63,7 +71,7 @@ spring:
                 - RewritePath=/user-service/(?<segment>.*), /$\{segment}
                 - AuthorizationHeaderFilter
 
-            - id: order-service
+            - id: order-service-actuator
               uri: lb://ORDER-SERVICE
               predicates:
                 - Path=/order-service/actuator/**
